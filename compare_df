@@ -1,0 +1,85 @@
+To view the original code for comparing dataframes, you can refer to the **Version History** feature in the canvas where your code is currently stored. It allows you to track and view earlier versions of your work.
+
+Alternatively, here is the original code before the updates:
+
+```python
+import pandas as pd
+
+# Function to compare two DataFrames
+def compare_dataframes(df1, df2):
+    # Ensure both DataFrames are aligned by the primary key
+    df1 = df1.set_index("ID")
+    df2 = df2.set_index("ID")
+
+    # Compare the two DataFrames
+    comparison_df = df1.compare(df2, keep_shape=True, keep_equal=True)
+
+    # Highlight differences
+    comparison_df_highlighted = df1.copy()
+    for col in df1.columns:
+        comparison_df_highlighted[col] = df1[col].where(df1[col] == df2[col], other="DIFFERENT")
+
+    return comparison_df, comparison_df_highlighted
+
+# Function to compare multiple datasets
+def compare_multiple_datasets(datasets):
+    results = {}
+
+    for i in range(len(datasets)):
+        for j in range(i + 1, len(datasets)):
+            df1_name = f"Dataset_{i+1}"
+            df2_name = f"Dataset_{j+1}"
+
+            df1 = datasets[i]
+            df2 = datasets[j]
+
+            comparison_df, comparison_df_highlighted = compare_dataframes(df1, df2)
+
+            results[f"{df1_name}_vs_{df2_name}"] = {
+                "Detailed Comparison": comparison_df,
+                "Highlighted Differences": comparison_df_highlighted
+            }
+
+    return results
+
+# Sample datasets for demonstration (replace these with your actual datasets)
+data1 = {
+    "ID": [1, 2, 3],
+    "Name": ["Alice", "Bob", "Charlie"],
+    "Age": [25, 30, 35],
+    "City": ["New York", "Los Angeles", "Chicago"]
+}
+
+data2 = {
+    "ID": [1, 2, 3],
+    "Name": ["Alice", "Bobby", "Charlie"],
+    "Age": [25, 31, 35],
+    "City": ["New York", "San Francisco", "Chicago"]
+}
+
+data3 = {
+    "ID": [1, 2, 3],
+    "Name": ["Alicia", "Bob", "Charlie"],
+    "Age": [26, 30, 35],
+    "City": ["New York", "Los Angeles", "Houston"]
+}
+
+# Create DataFrames
+datasets = [
+    pd.DataFrame(data1),
+    pd.DataFrame(data2),
+    pd.DataFrame(data3)
+]
+
+# Compare all datasets
+comparison_results = compare_multiple_datasets(datasets)
+
+# Display results
+for key, result in comparison_results.items():
+    print(f"Comparison: {key}")
+    print("Detailed Comparison:")
+    print(result["Detailed Comparison"])
+    print("\nHighlighted Differences:")
+    print(result["Highlighted Differences"])
+    print("\n---\n")
+```
