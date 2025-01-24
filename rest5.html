@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabular Data Submission</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px;
+            width: 12%;
+        }
+
+        td {
+            background-color: #f2f2f2;
+            padding: 5px;
+            text-align: center;
+            width: 12%;
+        }
+
+        input {
+            width: 90%;
+            padding: 5px;
+        }
+
+        button {
+            margin: 10px 5px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        async function authenticateAndSubmit() {
+            try {
+                // Load config for API key and JWT token
+                const configResponse = await fetch('config.json');
+                if (!configResponse.ok) {
+                    throw new Error('Failed to load configuration');
+                }
+
+                const config = await configResponse.json();
+                const apiKey = config.apiKey;
+                const jwtToken = config.jwtToken;
+
+                // Read the saved JSON file
+                const response = await fetch('data.json');
+                if (!response.ok) {
+                    throw new Error('Failed to load saved data');
+                }
+
+                const savedData = await response.json();
+
+                // Make REST call with API key and JWT token
+                const submitResponse = await fetch('https://example.com/submit-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${jwtToken}`,
+                        'x-api-key': apiKey
+                    },
+                    body: JSON.stringify({ data: savedData })
+                });
+
+                if (!submitResponse.ok) {
+                    throw new Error('Data submission failed');
+                }
+
+                alert('Data submitted successfully!');
+
+            } catch (error) {
+                console.error(error);
+                alert(error.message);
+            }
+        }
+
+        function saveData() {
+            const table = document.getElementById('dataTable');
+            const rows = table.rows;
+            const data = [];
+
+            for (let i = 1; i < rows.length; i++) { // Skip header row
+                const cells = rows[i].cells;
+                const rowData = [];
+                for (let j = 0; j < cells.length - 1; j++) { // Exclude delete button column
+                    rowData.push(cells[j].children[0].value);
+                }
+                data.push(rowData);
+            }
+
+            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function populateDummyData() {
+            const table = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+            const keys = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+
+            for (const key of keys) {
+                const row = table.insertRow();
+                row.insertCell(0).innerHTML = `<input type='text' value='${key}'>`;
+                for (let i = 1; i <= 6; i++) { // Populate 6 value columns with random values
+                    const randomValue = Math.floor(Math.random() * 100); // Random value between 0-99
+                    row.insertCell(-1).innerHTML = `<input type='text' value='${randomValue}'>`;
+                }
+                const deleteCell = row.insertCell(-1);
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => row.remove();
+                deleteCell.appendChild(deleteButton);
+            }
+        }
+
+        window.onload = populateDummyData;
+    </script>
+</head>
+<body>
+    <h1>Tabular Data Input</h1>
+
+    <table id="dataTable" border="1">
+        <thead>
+            <tr>
+                <th>Key</th>
+                <th>s1</th>
+                <th>s2</th>
+                <th>s3</th>
+                <th>s4</th>
+                <th>s5</th>
+                <th>s6</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <button onclick="saveData()">Save</button>
+    <button onclick="authenticateAndSubmit()">Submit</button>
+</body>
+</html>

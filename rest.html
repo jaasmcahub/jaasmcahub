@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabular Data Submission</title>
+    <script>
+        async function authenticateAndSubmit() {
+            // Collect table data
+            const table = document.getElementById('dataTable');
+            const rows = table.rows;
+            const data = [];
+
+            for (let i = 1; i < rows.length; i++) { // Skip header row
+                const cells = rows[i].cells;
+                const rowData = [];
+                for (let j = 0; j < cells.length - 1; j++) { // Exclude delete button column
+                    rowData.push(cells[j].children[0].value);
+                }
+                data.push(rowData);
+            }
+
+            try {
+                // Authenticate to get JWT token
+                const authResponse = await fetch('https://example.com/authenticate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: 'your_username',
+                        password: 'your_password'
+                    })
+                });
+
+                if (!authResponse.ok) {
+                    throw new Error('Authentication failed');
+                }
+
+                const authData = await authResponse.json();
+                const token = authData.token;
+
+                // Make REST call with JWT token
+                const response = await fetch('https://example.com/submit-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ data })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Data submission failed');
+                }
+
+                alert('Data submitted successfully!');
+
+            } catch (error) {
+                console.error(error);
+                alert(error.message);
+            }
+        }
+
+        function addRow() {
+            const table = document.getElementById('dataTable');
+            const row = table.insertRow(-1);
+
+            for (let i = 0; i < 3; i++) { // Assuming 3 columns
+                const cell = row.insertCell(i);
+                const input = document.createElement('input');
+                input.type = 'text';
+                cell.appendChild(input);
+            }
+
+            const deleteCell = row.insertCell(3);
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.onclick = () => row.remove();
+            deleteCell.appendChild(deleteButton);
+        }
+    </script>
+</head>
+<body>
+    <h1>Tabular Data Input</h1>
+
+    <table id="dataTable" border="1">
+        <thead>
+            <tr>
+                <th>Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td><button onclick="this.parentElement.parentElement.remove()">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button onclick="addRow()">Add Row</button>
+    <button onclick="authenticateAndSubmit()">Submit</button>
+</body>
+</html>
