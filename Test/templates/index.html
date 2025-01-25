@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Viewer</title>
+    <script>
+        async function executeScript() {
+            try {
+                const response = await fetch('/execute', { method: 'POST' });
+                const result = await response.json();
+
+                if (result.error) {
+                    alert("Error: " + result.error);
+                } else {
+                    const data = result.data;
+                    const table = document.getElementById("resultTable");
+                    table.innerHTML = ""; // Clear existing table
+
+                    // Populate table with new data
+                    data.forEach(row => {
+                        const tr = document.createElement("tr");
+                        row.forEach(cell => {
+                            const td = document.createElement("td");
+                            td.textContent = cell;
+                            tr.appendChild(td);
+                        });
+                        table.appendChild(tr);
+                    });
+                }
+            } catch (error) {
+                alert("An error occurred: " + error.message);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>CSV Viewer</h1>
+    <button onclick="executeScript()">Execute Script and Load CSV</button>
+    <div style="margin-top: 20px;">
+        <h3>Result:</h3>
+        <table id="resultTable" border="1">
+            <!-- CSV content will be dynamically added here -->
+        </table>
+    </div>
+</body>
+</html>
