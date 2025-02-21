@@ -20,3 +20,30 @@ df.to_csv("output.csv", index=False)
 
 # Display DataFrame
 print(df.head())
+
+
+from tableauhyperapi import HyperProcess, Connection, TableDefinition, SqlType, Telemetry, Inserter
+import csv
+
+def csv_to_hyper(csv_file, hyper_file, table_name="Extract"):
+    with HyperProcess(telemetry=Telemetry.SEND_USAGE_DATA_TO_TABLEAU) as hyper:
+        with Connection(endpoint=hyper.endpoint, database=hyper_file, create_mode="create") as connection:
+            # Define table schema
+            with open(csv_file, newline='', encoding='utf-8') as f:
+                reader = csv.reader(f)
+                headers = next(reader)  # Read column names
+                column_types = [SqlType.text() for _ in headers]  # Assuming all columns as text
+
+                table = TableDefinition(table_name, [(col, col_type) for col, col_type in zip(headers, column_types)])
+                connection.catalog.create_table(table)
+
+            # Insert data
+            with Inserter(connection, table) as inserter:
+                for row in reader:
+                    inserter.add_row(row)
+                inserter.execute()
+
+    print(f"Successfully converted {csv_file} to {hyper_file}")
+
+# Usage example
+csv_to_hyper("data.csv", "output.hyper")
