@@ -1,0 +1,22 @@
+from tableauhyperapi import HyperProcess, Connection, TableName
+import pandas as pd
+
+def hyper_to_dataframe(hyper_file, table_name):
+    with HyperProcess(telemetry=HyperProcess.Telemetry.SEND_USAGE_DATA_TO_TABLEAU) as hyper:
+        with Connection(endpoint=hyper.endpoint, database=hyper_file) as connection:
+            query = f"SELECT * FROM {table_name}"
+            df = pd.DataFrame(connection.execute_list_query(query))
+            column_names = [col.name for col in connection.catalog.get_table_definition(TableName(table_name)).columns]
+            df.columns = column_names
+            return df
+
+# Example usage
+hyper_file_path = "data.hyper"  # Replace with your .hyper file path
+table_name = "Extract"  # Most .hyper files store data in "Extract"
+df = hyper_to_dataframe(hyper_file_path, table_name)
+
+# Save to CSV (optional)
+df.to_csv("output.csv", index=False)
+
+# Display DataFrame
+print(df.head())
