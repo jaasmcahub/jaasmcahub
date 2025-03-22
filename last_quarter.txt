@@ -1,3 +1,59 @@
+
+from datetime import datetime, timedelta
+
+def last_quarter_friday(date_str):
+    try:
+        # Convert input date string to a datetime object
+        input_date = datetime.strptime(date_str, "%d-%b-%Y")
+
+        # Determine the quarter of the input date
+        month = input_date.month
+        year = input_date.year
+
+        if month in (1, 2, 3):  # Q1 → Previous Q4 (Oct-Dec)
+            prev_quarter = "Q4"
+            last_month = 12
+            year -= 1  # Move to the previous year
+        elif month in (4, 5, 6):  # Q2 → Previous Q1 (Jan-Mar)
+            prev_quarter = "Q1"
+            last_month = 3
+        elif month in (7, 8, 9):  # Q3 → Previous Q2 (Apr-Jun)
+            prev_quarter = "Q2"
+            last_month = 6
+        else:  # Q4 → Previous Q3 (Jul-Sep)
+            prev_quarter = "Q3"
+            last_month = 9
+
+        # Find the last day of the last month in the previous quarter
+        if last_month == 12:
+            last_day = 31  # December always has 31 days
+        else:
+            last_day = (datetime(year, last_month + 1, 1) - timedelta(days=1)).day
+
+        last_date = datetime(year, last_month, last_day)
+
+        # Find the last Friday of the month
+        while last_date.weekday() != 4:  # Friday is 4
+            last_date -= timedelta(days=1)
+
+        # Output details
+        print(f"Input Date: {date_str}")
+        print(f"Input Quarter: Q{((month - 1) // 3) + 1}")
+        print(f"Previous Quarter: {prev_quarter} of {year}")
+        print(f"Last Friday of {prev_quarter}: {last_date.strftime('%d-%b-%Y')}")
+
+    except ValueError:
+        print("Invalid date format. Please enter in 'DD-MON-YYYY' format (e.g., 08-Mar-2024).")
+
+# Example usage
+date_input = input("Enter date (DD-MON-YYYY): ")
+last_quarter_friday(date_input)
+
+
+
+
+
+
 from datetime import datetime, timedelta
 
 def last_quarter_friday(date_str):
