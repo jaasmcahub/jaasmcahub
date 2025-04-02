@@ -1,0 +1,53 @@
+SMART Objectives for Performance Improvement
+Objective 1: Improve Requirement Gathering Accuracy
+Specific: Enhance requirement elicitation skills to reduce rework and improve clarity in documentation.
+
+Measurable: Reduce BRD revisions by at least 40% within the next two months.
+
+Achievable: Attend a structured training session on requirement gathering and implement best practices.
+
+Relevant: Accurate requirements lead to successful project execution.
+
+Time-bound: Show improvement in two months, with weekly manager feedback.
+
+Objective 2: Meet Documentation Deadlines
+Specific: Submit BRDs, functional specifications, and other documentation on time.
+
+Measurable: Complete and submit 100% of BRDs within the agreed project timelines.
+
+Achievable: Use time management techniques and set internal deadlines.
+
+Relevant: Timely documentation ensures smooth project progress.
+
+Time-bound: Track submissions for the next 60 days.
+
+Objective 3: Enhance Stakeholder Communication
+Specific: Improve proactive engagement with stakeholders to clarify requirements.
+
+Measurable: Conduct at least 2 structured stakeholder meetings per project.
+
+Achievable: Prepare meeting agendas and document key takeaways.
+
+Relevant: Strong stakeholder communication leads to better project alignment.
+
+Time-bound: Demonstrate improvement over the PIP duration.
+
+Objective 4: Strengthen Data Analysis & Insights
+Specific: Deliver actionable insights based on data analysis.
+
+Measurable: Provide at least one data-driven recommendation per project.
+
+Achievable: Leverage available analytics tools and complete a refresher course on data interpretation.
+
+Relevant: Data-driven decision-making supports business strategy.
+
+Time-bound: Show measurable impact within the PIP timeframe.
+
+Support & Resources Provided
+Training on business requirement gathering and stakeholder management.
+
+Mentorship sessions with a senior business analyst.
+
+Templates and checklists for structured requirement documentation.
+
+Weekly check-ins with the manager for feedback and guidance.
