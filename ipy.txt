@@ -1,0 +1,30 @@
+import pandas as pd
+import ipywidgets as widgets
+from IPython.display import display
+
+# Sample DataFrame
+df = pd.DataFrame({
+    'Fruits': ['Apple', 'Banana', 'Cherry', 'Date']
+})
+
+# Create Dropdown using the 'Fruits' column
+dropdown = widgets.Dropdown(
+    options=df['Fruits'].tolist(),
+    description='Choose:',
+    value=df['Fruits'].iloc[0]  # Default selection
+)
+
+# Variable to store selected value
+selected_value = {}
+
+# Function to update selected value
+def on_dropdown_change(change):
+    if change['type'] == 'change' and change['name'] == 'value':
+        selected_value['fruit'] = change['new']
+        print(f"Selected fruit: {selected_value['fruit']}")
+
+# Attach event handler
+dropdown.observe(on_dropdown_change)
+
+# Display dropdown
+display(dropdown)
